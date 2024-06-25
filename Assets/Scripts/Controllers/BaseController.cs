@@ -163,4 +163,10 @@ public class BaseController : MonoBehaviour
     {
 
     }
+
+    public void StartSync()
+    {
+        if(transform.position != Pos)
+            transform.position = Pos;
+    }
 }

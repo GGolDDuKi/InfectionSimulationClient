@@ -37,7 +37,7 @@ public class ObjectManager
 				MyPlayer.Name = info.Name;
 				MyPlayer.MoveInfo = info.MoveInfo;
 				MyPlayer.PosInfo = info.PosInfo;
-				MyPlayer.Sync();
+				MyPlayer.StartSync();
 			}
 			else
 			{
@@ -51,7 +51,7 @@ public class ObjectManager
 				pc.Name = info.Name;
 				pc.MoveInfo = info.MoveInfo;
 				pc.PosInfo = info.PosInfo;
-				pc.Sync();
+				pc.StartSync();
 			}
 		}
     }
