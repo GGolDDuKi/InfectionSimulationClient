@@ -12,6 +12,16 @@ public class BubbleManager
     public PanelChatUI SelectedChat { get; set; }
     Color _normalColor = Color.white;
 
+
+    public enum ChatState
+    {
+        None,
+        Chat,
+        MiniChat
+    }
+
+    public ChatState CurrentState { get; set; } = ChatState.None;
+
     public void NextPage()
     {
         if (SelectedChat == null)
@@ -35,6 +45,9 @@ public class BubbleManager
 
         SelectedChat.CloseBubble();
     }
+
+
+
 
     public void ChangeButtonColor()
     {
