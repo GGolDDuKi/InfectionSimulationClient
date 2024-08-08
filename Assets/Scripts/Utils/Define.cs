@@ -79,7 +79,7 @@ public class Define
         public bool IsFull { get { return _count == _bufferSize; } }
     }
 
-    public static int VoiceFrequency = 16000;
+    public static int VoiceFrequency = 44000;
     public static int VoiceChannel = 2;
 
     public static float[] ConvertMonoToStereo(float[] monoSamples)

@@ -185,10 +185,10 @@ namespace Whisper.Utils
                 float[] data = new float[sampleCount];
                 _clip.GetData(data, _lastSentSample);
 
-                float[] monoData = Define.ConvertMonoToStereo(data);
+                //float[] monoData = Define.ConvertMonoToStereo(data);
 
                 C_Voice voicePacket = new C_Voice();
-                voicePacket.VoiceClip.AddRange(monoData);
+                voicePacket.VoiceClip.AddRange(data);
                 Managers.Network.Send(voicePacket);
 
                 _lastSentSample = pos;
