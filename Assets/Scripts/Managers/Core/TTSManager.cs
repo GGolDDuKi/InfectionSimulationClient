@@ -20,6 +20,7 @@ public class TTSManager
         tts.input.text = message;
         CreateAudio(audioSource);
     }
+
     void Init()
     {
         SetInput si = new SetInput();
@@ -28,13 +29,13 @@ public class TTSManager
 
         SetVoice sv = new SetVoice();
         sv.languageCode = "ko-KR";
-        sv.name = "ko-KR-Standard-B";
-        sv.ssmlGender = "FEMALE";
+        sv.name = "ko-KR-Wavenet-C";
+        sv.ssmlGender = "MALE";
         tts.voice = sv;
 
         SetAudioConfig sa = new SetAudioConfig();
         sa.audioEncoding = "LINEAR16";
-        sa.speakingRate = 0.8f;
+        sa.speakingRate = 1f;
         sa.pitch = 0;
         sa.volumeGainDb = 0;
         tts.audioConfig = sa;
@@ -50,7 +51,7 @@ public class TTSManager
 
         var f = ConvertByteToFloat(bytes);
 
-        AudioClip audioClip = AudioClip.Create("audioContent", f.Length, 1, 44100, false);
+        AudioClip audioClip = AudioClip.Create("audioContent", f.Length, 1, 24000, false);
         audioClip.SetData(f, 0);
 
         audioSource.PlayOneShot(audioClip);
