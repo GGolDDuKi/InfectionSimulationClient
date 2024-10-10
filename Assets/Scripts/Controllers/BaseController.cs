@@ -464,6 +464,9 @@ public class BaseController : MonoBehaviour
             return;
 
         Place = other.gameObject.name;
+
+
+
     }
 
 

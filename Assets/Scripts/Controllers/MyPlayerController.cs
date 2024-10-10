@@ -3,6 +3,7 @@ using GoogleCloudStreamingSpeechToText;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.TextCore.Text;
@@ -13,6 +14,8 @@ using static Google.Cloud.Speech.V1.LanguageCodes;
 
 public class MyPlayerController : PlayerController
 {
+    [SerializeField] private TextMeshProUGUI locationText; // 연결할 UI 텍스트 컴포넌트
+    private string currentPlace = "";
     public override CreatureState State
     {
         get
@@ -38,10 +41,21 @@ public class MyPlayerController : PlayerController
     public override void Awake()
     {
         base.Awake();
+        locationText = GameObject.Find("LocationText")?.GetComponent<TextMeshProUGUI>();
+
+        if (locationText == null)
+        {
+            Debug.LogError("LocationText를 찾을 수 없습니다!"); // 에러 로그 추가
+        }
+
         GameObject cameraArm = Managers.Resource.Instantiate("System/CameraArm", this.gameObject.transform);
         _cameraArm = cameraArm.GetComponent<CameraArm>();
         _coSendPacket = StartCoroutine(CoSyncUpdate());
         _layerMask = 1 << LayerMask.NameToLayer("Interaction");
+
+
+        _coSendPacket = StartCoroutine(CoSyncUpdate());
+        
     }
 
     protected override void UpdateController()
@@ -93,7 +107,47 @@ public class MyPlayerController : PlayerController
         return false;
     }
 
-    void GetKeyInput()
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Map"))
+        {
+            // 캐릭터가 "Map" 레이어의 오브젝트와 충돌하면 구역 이름을 저장
+            currentPlace = other.gameObject.name;
+            Debug.Log($"Entered: {currentPlace}"); // 디버그 로그 추가
+            UpdateLocationUI(); // UI 업데이트
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Map"))
+        {
+            // 구역을 나가면 구역 이름 초기화
+            Debug.Log($"Exited: {currentPlace}"); // 디버그 로그 추가
+            currentPlace = "";
+            UpdateLocationUI(); // UI 업데이트
+        }
+    }
+
+    private void UpdateLocationUI()
+    {
+        if (locationText != null)
+        {
+            // 구역 이름이 없으면 빈 문자열 표시, 구역 이름이 있으면 해당 이름 표시
+            locationText.text = string.IsNullOrEmpty(currentPlace) ? "" : $"현재 위치: {currentPlace}";
+            Debug.Log($"Location Text Updated: {locationText.text}"); // 디버그 로그 추가
+        }
+        else
+        {
+            Debug.LogError("LocationText가 할당되지 않았습니다!"); // 에러 로그 추가
+        }
+    }
+
+
+
+
+
+        void GetKeyInput()
     {
         if (IsCanActive())
         {
