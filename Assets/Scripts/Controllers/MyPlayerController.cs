@@ -33,6 +33,7 @@ public class MyPlayerController : PlayerController
     float mouseX = 0f;
     Coroutine _coSendPacket;
     public GameObject _interactionObject;
+    GameObject Arrow;
     int _layerMask;
 
     public override void Awake()
@@ -43,6 +44,8 @@ public class MyPlayerController : PlayerController
         _coSendPacket = StartCoroutine(CoSyncUpdate());
         _layerMask = 1 << LayerMask.NameToLayer("Interaction");
         Managers.Setting.SceneStartMicCheck();
+
+        Arrow = Managers.Resource.Instantiate($"Items/Arrow",this.gameObject.transform);
     }
 
     protected override void UpdateController()
