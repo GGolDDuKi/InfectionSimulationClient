@@ -29,23 +29,23 @@ public class MyPlayerController : PlayerController
     [SerializeField] private float _syncTimer = 0.2f;
     [SerializeField] float _camRotationSpeed;
     [SerializeField] float raycastDistance = 2f;
-    public Arrow_Deactivate Arrow_Deactivate;
     public CameraArm _cameraArm;
     float mouseX = 0f;
     Coroutine _coSendPacket;
     public GameObject _interactionObject;
+    GameObject Arrow;
     int _layerMask;
+
     public override void Awake()
     {
         base.Awake();
         GameObject cameraArm = Managers.Resource.Instantiate("System/CameraArm", this.gameObject.transform);
-         GameObject Arrow = Managers.Resource.Instantiate($"Items/Arrow_Deactivate", this.gameObject.transform);
         _cameraArm = cameraArm.GetComponent<CameraArm>();
-        Arrow_Deactivate = Arrow.GetComponent<Arrow_Deactivate>();
         _coSendPacket = StartCoroutine(CoSyncUpdate());
         _layerMask = 1 << LayerMask.NameToLayer("Interaction");
         Managers.Setting.SceneStartMicCheck();
-       
+
+        Arrow = Managers.Resource.Instantiate($"Items/Arrow",this.gameObject.transform);
     }
 
     protected override void UpdateController()
