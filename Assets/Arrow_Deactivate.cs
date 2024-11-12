@@ -38,7 +38,7 @@ public class Arrow_Deactivate : MonoBehaviour
 
         Arrow.SetActive(true);
     }
-
+    
     public void init()
     {
         Arrow.GetComponent<Arrow>().Scenario_Place = Util.FindChild(Collider_Place, Managers.Scenario.CurrentScenarioInfo.Place).transform.position;
