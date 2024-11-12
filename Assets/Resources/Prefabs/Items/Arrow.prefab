@@ -10,8 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3570489182058330541}
   - component: {fileID: 140032471225385173}
-  - component: {fileID: 4527589025018894108}
-  - component: {fileID: 8014263696018143492}
   m_Layer: 0
   m_Name: Arrow
   m_TagString: Untagged
@@ -86,40 +84,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!195 &4527589025018894108
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2961220795483236095}
-  m_Enabled: 0
-  m_AgentTypeID: 0
-  m_Radius: 1.28
-  m_Speed: 0
-  m_Acceleration: 8
-  avoidancePriority: 50
-  m_AngularSpeed: 120
-  m_StoppingDistance: 0
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 2.5600007
-  m_BaseOffset: 1.2800003
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
---- !u!114 &8014263696018143492
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2961220795483236095}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 919df4448a1f17e48a310c027fe77cd2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &7820147118902483864
 GameObject:
   m_ObjectHideFlags: 0
@@ -188,3 +152,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 919df4448a1f17e48a310c027fe77cd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Scenario_Place: {x: 0, y: 0, z: 0}

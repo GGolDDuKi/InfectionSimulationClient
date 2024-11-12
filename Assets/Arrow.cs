@@ -7,27 +7,54 @@ using static UnityEngine.GraphicsBuffer;
 
 public class Arrow : MonoBehaviour
 {
+    NavMeshAgent navMeshAgent;
 
-    public Transform target;  // 목표 지점
-    public Vector3 targetPosition = new Vector3(11.224f, 0.761f, 0.376f);  // 목표 위치
+    Vector3 Fixed_coordinates;      // 화살표 캐릭터에 위치 좌표(고정시키기 위해서)
+    public Vector3 Scenario_Place;//  = new Vector3(11.224f, 0.761f, 0.376f);  // 목표 위치
 
-    private NavMeshAgent navMeshAgent;
-    Vector3 a;
     void Start()
     {
-        a = gameObject.transform.localPosition;
+        Fixed_coordinates = gameObject.transform.localPosition;
         navMeshAgent = gameObject.GetComponent<NavMeshAgent>();
         navMeshAgent.speed = 0;  // 이동 속도 0으로 설정 (화살표만 회전)
     }
-
+    
     void Update()
     {
-        if(gameObject.transform.position != a)
+        Deactivate_Check();
+        Update_Go_Target_Point();
+    }
+   void Deactivate_Check()
+    {
+        if (!Managers.Scenario._doingScenario)
+            gameObject.SetActive(false);
+
+        if (Managers.Scenario.CurrentScenarioInfo.Place == null)
+            gameObject.SetActive(false);
+
+        if (Managers.Scenario.CurrentScenarioInfo.Position != Managers.Object.MyPlayer.Position)
+            gameObject.SetActive(false);
+
+        if (Managers.Scenario.CurrentScenarioInfo.Place == Managers.Object.MyPlayer.Place)
+            gameObject.SetActive(false);
+
+        if (Fixed_coordinates == null || Scenario_Place == null)
+            gameObject.SetActive(false);
+    }
+
+    void Update_Go_Target_Point()
+    {
+        if (gameObject.transform.position != Fixed_coordinates)
         {
-            gameObject.transform.localPosition = a;
+            gameObject.transform.localPosition = Fixed_coordinates;
         }
+
+        if (Scenario_Place == null)
+            return;
+
         // 목표 지점으로 내비게이션 설정
-        navMeshAgent.SetDestination(targetPosition);
+        if(gameObject.activeSelf)
+            navMeshAgent.SetDestination(Scenario_Place);
 
         // NavMesh 경로를 얻고, 첫 번째 경로 포인트를 사용하여 회전
         if (navMeshAgent.pathPending || navMeshAgent.path.corners.Length < 2)
@@ -40,3 +67,4 @@ public class Arrow : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
     }
 }
+ 
