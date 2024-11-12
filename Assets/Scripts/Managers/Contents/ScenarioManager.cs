@@ -119,7 +119,7 @@ public class ScenarioManager
         bool cleaner1Added = AddNPC("미화1", WaitingArea);
         bool cleaner2Added = AddNPC("미화2", WaitingArea);
     }
-
+    
     public void Reset()
     {
         PassSpeech = false;

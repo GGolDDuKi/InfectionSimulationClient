@@ -408,7 +408,7 @@ public class MyPlayerController : PlayerController
             _updated = false;
         }
     }
-
+    
     private void CheckUpdatedFlag()
     {
         SendSyncPacket();

@@ -25,7 +25,7 @@ public class Arrow : MonoBehaviour
         Update_Go_Target_Point();
     }
    void Deactivate_Check()
-    {
+    {   
         if (!Managers.Scenario._doingScenario)
             gameObject.SetActive(false);
 
