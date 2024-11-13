@@ -39,7 +39,7 @@ public class MyPlayerController : PlayerController
     {
         base.Awake();
         GameObject cameraArm = Managers.Resource.Instantiate("System/CameraArm", this.gameObject.transform);
-         GameObject Arrow = Managers.Resource.Instantiate($"Items/Arrow_Deactivate", this.gameObject.transform);
+        GameObject Arrow = Managers.Resource.Instantiate($"Items/Arrow_Deactivate", this.gameObject.transform);
         _cameraArm = cameraArm.GetComponent<CameraArm>();
         Arrow_Deactivate = Arrow.GetComponent<Arrow_Deactivate>();
         _coSendPacket = StartCoroutine(CoSyncUpdate());
