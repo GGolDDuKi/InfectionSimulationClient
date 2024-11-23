@@ -323,10 +323,12 @@ public class ScenarioManager
     }
     IEnumerator WearingUI()
     {
-        UIChckStart = true;
-        PassUICheck = false;
-        PassUI = Managers.Instance.StartCoroutine(WearingUICheck());
-        yield return Managers.Instance.StartCoroutine(UIcheck());
+        Managers.UI.CreateUI("MPX_Clothing_Panel");
+        yield return null;
+        //UIChckStart = true;
+        //PassUICheck = false;
+        //PassUI = Managers.Instance.StartCoroutine(WearingUICheck());
+        //yield return Managers.Instance.StartCoroutine(UIcheck());
 
     }
     IEnumerator SpecimeCollectionUI()
