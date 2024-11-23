@@ -219,8 +219,7 @@ public class ScenarioManager
                 Transform coverImagesParent = WearUI1.transform.Find("CoverImage");
                 if (coverImagesParent != null)
                 {
-                    // Util 클래스의 FadeOutCoverImages 호출
-                    yield return Util.FadeOutCoverImages(coverImagesParent, 2f); // 2초 동안 투명화
+                    yield return Util.FadeOutCoverImages(coverImagesParent, 2f); 
                 }
             }
                 WearUI2 = Managers.UI.CreateUI("Final_Wearing_Image");
@@ -236,8 +235,7 @@ public class ScenarioManager
                 Transform coverImagesParent = WearUI1.transform.Find("CoverImage");
                 if (coverImagesParent != null)
                 {
-                    // Util 클래스의 FadeOutCoverImages 호출
-                    yield return Util.FadeOutCoverImages(coverImagesParent, 2f); // 2초 동안 투명화
+                    yield return Util.FadeOutCoverImages(coverImagesParent, 2f); 
                 }
             }
             UIChckStart = false;

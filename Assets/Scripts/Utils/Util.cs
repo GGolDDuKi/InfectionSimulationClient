@@ -94,11 +94,11 @@ public class Util
 
         LayerMask layerMask = ~exceptionLayer;
         
-        // 현재 오브젝트의 위치를 기준으로 반경 내에 있는 Collider들 가져옴
+        
         Collider[] hitColliders = Physics.OverlapSphere(center.transform.position, radius, layerMask);
         List<T> result = new List<T>();
 
-        // Collider들 중에서 원하는 컴포넌트를 가진 오브젝트를 찾음
+        
         foreach (Collider collider in hitColliders)
         {
             T component = collider.GetComponent<T>();
@@ -148,7 +148,6 @@ public class Util
             yield return null;
         }
 
-        // Ensure the alpha is set to 0
         color.a = 0f;
         image.color = color;
     }
@@ -168,11 +167,11 @@ public class Util
             Image imageComponent = coverImagesParent.GetChild(i).GetComponent<Image>();
             if (imageComponent != null)
             {
-                // 투명도 점차 감소
+                
                 yield return FadeOutImage(imageComponent, fadeDuration);
             }
 
-            // 투명화가 완료되면 비활성화
+            
             coverImagesParent.GetChild(i).gameObject.SetActive(false);
         }
     }
