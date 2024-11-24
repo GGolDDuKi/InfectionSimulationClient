@@ -25,7 +25,7 @@ public class OrderCheckButton : MonoBehaviour
             
         else if (gameObject.name == "Reset")
         {
-            Managers.UI.CreateUI(Managers.Scenario.CurrentScenarioInfo.Action, mPX_Clothing_Panel.gameObject.transform);
+            mPX_Clothing_Panel.child = Managers.UI.CreateUI(Managers.Scenario.CurrentScenarioInfo.Action, mPX_Clothing_Panel.gameObject.transform);
             transform.parent.parent.GetComponent<MPX_Clothing_Panel>().checkingCount = 0;
             Destroy(transform.parent.gameObject);
         }
