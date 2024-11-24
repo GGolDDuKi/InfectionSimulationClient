@@ -66,7 +66,7 @@ public class MPX_Clothing_Panel : MonoBehaviour
         else
         {
             checkingCount = 0;
-            Managers.UI.CreateSystemPopup("WarningPopup", "틀렸습니다.", UIManager.NoticeType.Info);
+            Managers.UI.CreateSystemPopup("WarningPopup", "틀렸습니다.", UIManager.NoticeType.Warning);
             child = Managers.UI.CreateUI(Managers.Scenario.CurrentScenarioInfo.Action,gameObject.transform);
             Destroy(gameObject.transform.GetChild(0).gameObject);
         }
