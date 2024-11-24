@@ -22,6 +22,8 @@ public class ScenarioManager
     public int Score = 100;
 
     public Dictionary<string, NPCController> NPCs = new Dictionary<string, NPCController>();
+    public Dictionary<string, PlayerNPCController> PlayerNPCs = new Dictionary<string, PlayerNPCController>();
+    Coroutine _coPlayerNPC;
 
     GameObject _realtimeSTT;
     public GameObject RealtimeSTT
@@ -54,7 +56,7 @@ public class ScenarioManager
         }
     }
 
-    List<GameObject> InteractableObjectsList = new List<GameObject>();
+    public List<GameObject> InteractableObjectsList = new List<GameObject>();
     List<GameObject> ObjectIndicators = new List<GameObject>();
     GameObject ObjectIndicator { get; set; }
 
@@ -73,6 +75,9 @@ public class ScenarioManager
         }
     }
     string _place;
+
+    public bool AllPlayerNPCCompleted;
+    public bool TTSPlaying = false;
 
     public Navigation Navigation { get; set; }
 
@@ -106,7 +111,7 @@ public class ScenarioManager
 
     public ScenarioInfo CurrentScenarioInfo { get; set; }
 
-    void Init(string scenarioName)
+    void Init(string scenarioName, S_StartScenario packet)
     {
         ScenarioName = scenarioName;
         Progress = 0;
@@ -124,6 +129,14 @@ public class ScenarioManager
         bool securityOfficer4Added = AddNPC("보안요원4", WaitingArea);
         bool cleaner1Added = AddNPC("미화1", WaitingArea);
         bool cleaner2Added = AddNPC("미화2", WaitingArea);
+
+        if(packet.LackPositions.Count > 0)
+        {
+            foreach(var position in packet.LackPositions)
+            {
+                AddPlayerNPC(position);
+            }
+        }
 
         GameObject objects = GameObject.Find("InteractableObjects");
         int childCount = objects.transform.childCount;
@@ -165,12 +178,12 @@ public class ScenarioManager
     #endregion
 
     #region 시나리오 진행 기능
-    public void StartScenario(string scenarioName)
+    public void StartScenario(string scenarioName, S_StartScenario packet)
     {
         if(_doingScenario == false)
         {
             _doingScenario = true;
-            Managers.Instance.StartCoroutine(CoScenario(scenarioName));
+            Managers.Instance.StartCoroutine(CoScenario(scenarioName, packet));
         }
     }
 
@@ -355,7 +368,17 @@ public class ScenarioManager
     #endregion
 
     IEnumerator CoScenarioStep(int progress)
-    { 
+    {
+        AllPlayerNPCCompleted = false;
+        if (PlayerNPCs.Count > 0)
+        {
+            foreach (var npc in PlayerNPCs.Values)
+            {
+                npc.PassScenario = false;
+            }
+        }
+        _coPlayerNPC = Managers.Instance.StartCoroutine(CoInitPlayerNPCs());
+
         UpdateMyPlace(); 
         Managers.STT.STTStreamingText.RegisterCommand(CurrentScenarioInfo.DetailHint, CurrentScenarioInfo.Position == Managers.Object.MyPlayer.Position);
         Managers.Setting.SceneStartMicCheck();
@@ -382,6 +405,7 @@ public class ScenarioManager
             {
                 Managers.Instance.StartCoroutine(SpecimeCollectionUI());
             }
+
             Managers.Instance.StartCoroutine(CoCheckAction());
             yield return new WaitUntil(() => CompleteCount >= 1);
 
@@ -419,12 +443,18 @@ public class ScenarioManager
         {
             UpdateScenarioAssist(CurrentScenarioInfo.Position + " 플레이어가 시나리오를 진행 중 입니다...");
         }
+
+        yield return _coPlayerNPC;
+        yield return new WaitUntil(() => AllPlayerNPCCompleted);
+        yield return new WaitUntil(() => !TTSPlaying);
+
         SendComplete();
 
         yield return new WaitUntil(() => Progress == progress);
+        yield break;
     }
 
-    IEnumerator CoScenario(string scenarioName)
+    IEnumerator CoScenario(string scenarioName, S_StartScenario packet)
     {
         Managers.UI.CreateSystemPopup("PopupNotice", $"{scenarioName} 시나리오를 시작합니다.", UIManager.NoticeType.None);
         yield return new WaitForSeconds(3.0f);
@@ -432,7 +462,7 @@ public class ScenarioManager
         Managers.UI.CreateSystemPopup("PopupNotice", $"사랑합니다.\n지금부터 신종감염병 대응 모의 훈련을 시작하고자 하오니 환자 및 보호자께서는 동요하지 마시기 바랍니다.\n모의 훈련 요원들은 지금부터 훈련을 시작하도록 하겠습니다.", UIManager.NoticeType.None);
         yield return new WaitForSeconds(3.0f);
 
-        Init(scenarioName);
+        Init(scenarioName, packet);
 
         #region 시나리오 진행
 
@@ -468,6 +498,15 @@ public class ScenarioManager
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(16));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(17));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(18));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(19));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(20));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(21));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(22));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(23));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(24));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(25));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(26));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(27));
                 #region 환자 격리실 이송
                 {
                     NPCs["미화1"].Use("Mask");
@@ -520,7 +559,7 @@ public class ScenarioManager
                     yield return new WaitUntil(() => (NPCs["보안요원1"].transform.position - MovePosition).magnitude < 0.3f);
 
                     NPCs["보안요원1"].AddOrder(NPCs["보안요원1"].CoGoDestination(IsolationArea));
-                    NPCs["보안요원1"].ChangeSpeed(2f);
+                    NPCs["보안요원1"].ChangeSpeed(3f);
 
                     yield return new WaitUntil(() => (NPCs["이송요원"].transform.position - MovePosition).magnitude < 0.3f);
 
@@ -529,7 +568,7 @@ public class ScenarioManager
                     NPCs["이송요원"].transform.GetChild(1).localPosition = new Vector3(0, 0, 1.2f);
                     NPCs["이송요원"].transform.GetChild(1).localEulerAngles = new Vector3(0, -90, 0);
                     NPCs["이송요원"].AddOrder(NPCs["이송요원"].CoGoDestination_Animation(IsolationArea, CreatureState.Push));
-                    NPCs["이송요원"].ChangeSpeed(2f);
+                    NPCs["이송요원"].ChangeSpeed(3f);
                     GameObject go1 = Managers.Resource.Instantiate("System/ControlSphere", NPCs["보안요원1"].transform);
                     GameObject go2 = Managers.Resource.Instantiate("System/ControlSphere", NPCs["보안요원2"].transform);
                     GameObject go3 = Managers.Resource.Instantiate("System/ControlSphere", NPCs["보안요원3"].transform);
@@ -568,30 +607,20 @@ public class ScenarioManager
                     Managers.Resource.Destroy(go4);
                 }
                 #endregion
-                yield return Managers.Instance.StartCoroutine(CoScenarioStep(19));
-                yield return Managers.Instance.StartCoroutine(CoScenarioStep(20));
-                yield return Managers.Instance.StartCoroutine(CoScenarioStep(21));
-                yield return Managers.Instance.StartCoroutine(CoScenarioStep(22));
-                yield return Managers.Instance.StartCoroutine(CoScenarioStep(23));
-                yield return Managers.Instance.StartCoroutine(CoScenarioStep(24));
-                yield return Managers.Instance.StartCoroutine(CoScenarioStep(25));
-                Managers.UI.ChangeChatBubble(NPCs["환자"].transform, "이감염 0 0 1 2 1 8 년생 입니다.");
-                yield return Managers.Instance.StartCoroutine(CoScenarioStep(26));
-                yield return Managers.Instance.StartCoroutine(CoScenarioStep(27));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(28));
-                Managers.UI.ChangeChatBubble(NPCs["환자"].transform, "아니요. 딱히 없었어요.");
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(29));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(30));
-                Managers.UI.ChangeChatBubble(NPCs["환자"].transform, "이감염 0 0 1 2 1 8 년생 입니다.");
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(31));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(32));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(33));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(34));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(35));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(36));
+                Managers.UI.ChangeChatBubble(NPCs["환자"].transform, "이감염 0 0 1 2 1 8 년생 입니다.");
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(37));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(38));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(39));
+                Managers.UI.ChangeChatBubble(NPCs["환자"].transform, "아니요. 딱히 없었어요.");
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(40));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(41));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(42));
@@ -600,7 +629,6 @@ public class ScenarioManager
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(45));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(46));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(47));
-                Managers.UI.ChangeChatBubble(NPCs["환자"].transform, "이감염 0 0 1 2 1 8 년생 입니다.");
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(48));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(49));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(50));
@@ -610,6 +638,7 @@ public class ScenarioManager
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(54));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(55));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(56));
+                Managers.UI.ChangeChatBubble(NPCs["환자"].transform, "이감염 0 0 1 2 1 8 년생 입니다.");
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(57));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(58));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(59));
@@ -621,7 +650,6 @@ public class ScenarioManager
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(65));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(66));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(67));
-                Managers.UI.ChangeChatBubble(NPCs["환자"].transform, "이감염  0 0 1 2 1 8 년생 입니다.");
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(68));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(69));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(70));
@@ -631,6 +659,7 @@ public class ScenarioManager
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(74));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(75));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(76));
+                Managers.UI.ChangeChatBubble(NPCs["환자"].transform, "이감염 0 0 1 2 1 8 년생 입니다.");
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(77));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(78));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(79));
@@ -651,6 +680,7 @@ public class ScenarioManager
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(94));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(95));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(96));
+                Managers.UI.ChangeChatBubble(NPCs["환자"].transform, "이감염  0 0 1 2 1 8 년생 입니다.");
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(97));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(98));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(99));
@@ -672,10 +702,57 @@ public class ScenarioManager
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(115));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(116));
                 yield return Managers.Instance.StartCoroutine(CoScenarioStep(117));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(118));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(119));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(120));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(121));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(122));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(123));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(124));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(125));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(126));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(127));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(128));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(129));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(130));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(131));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(132));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(133));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(134));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(135));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(136));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(137));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(138));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(139));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(140));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(141));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(142));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(143));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(144));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(145));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(146));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(147));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(148));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(149));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(150));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(151));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(152));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(153));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(154));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(155));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(156));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(157));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(158));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(159));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(160));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(161));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(162));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(163));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(164));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(165));
                 #region 환자 타병원 전원
                 {
                     NPCs["이송요원"].Teleport(WaitingArea);
-                    NPCs["보안요원1"].Teleport(WaitingArea);
                     NPCs["보안요원2"].Teleport(WaitingArea);
 
                     Managers.UI.ChangeChatBubble(NPCs["보안요원2"].transform, "신종감염병 의심환자 이송중으로\n잠시 이동동선 통제가 있을 예정이니\n환자 및 보호자분들의 양해 부탁드립니다.");
@@ -698,13 +775,12 @@ public class ScenarioManager
                     NPCs["이송요원"].transform.GetChild(1).localPosition = new Vector3(0, 0, 1.2f);
                     NPCs["이송요원"].transform.GetChild(1).localEulerAngles = new Vector3(0, -90, 0);
                     NPCs["이송요원"].AddOrder(NPCs["이송요원"].CoGoDestination_Animation(ChangeBedPoint, CreatureState.Push));
-                    NPCs["이송요원"].ChangeSpeed(2f);
+                    NPCs["이송요원"].ChangeSpeed(3f);
 
                     yield return new WaitUntil(() => (NPCs["이송요원"].transform.position - ChangeBedPoint).magnitude < 0.3f);
 
                     //환자 이송이 끝나면 모든 NPC 상태 초기화, 출입구로 이동 후 퇴장 (환자 제외)
                     NPCs["이송요원"].ResetSpeed();
-                    NPCs["보안요원1"].ResetSpeed();
 
                     Managers.Resource.Destroy(go2);
 
@@ -714,9 +790,9 @@ public class ScenarioManager
                     NPCs["이송요원"].AddOrder(NPCs["이송요원"].CoTeleport(WaitingArea));
                 }
                 #endregion
-                yield return Managers.Instance.StartCoroutine(CoScenarioStep(118));
-                yield return Managers.Instance.StartCoroutine(CoScenarioStep(119));
-                yield return Managers.Instance.StartCoroutine(CoScenarioStep(120));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(166));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(167));
+                yield return Managers.Instance.StartCoroutine(CoScenarioStep(168));
                 #region 음압격리실 소독
                 {
                     NPCs["미화1"].Teleport(Entrance);
@@ -739,6 +815,7 @@ public class ScenarioManager
                     yield return new WaitUntil(() => (NPCs["미화1"].Place == "대기장소") && (NPCs["미화2"].Place == "대기장소"));
                 }
                 #endregion
+
                 break;
         }
 
@@ -775,7 +852,7 @@ public class ScenarioManager
         switch (CurrentScenarioInfo.Action)
         {
             case "Call":
-                Managers.Phone.Device.SendMessage(CurrentScenarioInfo.Position, CurrentScenarioInfo.DetailHint, CurrentScenarioInfo.Targets);
+                Managers.Phone.Device.SendMessage(CurrentScenarioInfo.Position, CurrentScenarioInfo.OriginalSentence, CurrentScenarioInfo.Targets);
                 break;
         }
     }
@@ -1124,6 +1201,70 @@ public class ScenarioManager
 
     #endregion
 
+    #region PlayerNPC 제어 기능
+
+    bool AddPlayerNPC(string position)
+    {
+        GameObject go = Managers.Resource.Instantiate($"Creatures/PlayerNPC/{position}");
+
+        if (go == null)
+        {
+            Debug.LogError($"Can't find {position} PlayerNPC prefab");
+            return false;
+        }
+
+        PlayerNPCController nc = go.GetComponent<PlayerNPCController>();
+        nc.Position = position;
+        PlayerNPCs.Add(nc.Position, nc);
+        Managers.Object.Characters.Add(position, nc);
+        nc.GenerateNumber = PlayerNPCs.Count - 1;
+        nc.WaitingPoint = new Vector3(PlayerNPCSpawnPoint.x, PlayerNPCSpawnPoint.y, PlayerNPCSpawnPoint.z + -5 * nc.GenerateNumber);
+
+        nc.Teleport(nc.WaitingPoint);
+
+        return true;
+    }
+
+    public void CheckPlayerNPCComplete()
+    {
+        if (PlayerNPCs.Count <= 0)
+            AllPlayerNPCCompleted = true;
+
+        foreach (var npc in PlayerNPCs.Values)
+        {
+            if (npc.PassScenario == false)
+                AllPlayerNPCCompleted = false;
+        }
+
+        AllPlayerNPCCompleted = true;
+    }
+
+    public IEnumerator CoInitPlayerNPCs()
+    {
+        if (PlayerNPCs.Count <= 0)
+            yield break;
+
+        Dictionary<PlayerNPCController, Coroutine> coDict = new Dictionary<PlayerNPCController, Coroutine>();
+
+        foreach (var npc in PlayerNPCs.Values)
+        {
+            coDict.Add(npc, npc.StartCoroutine(npc.AutoActionScenario(CurrentScenarioInfo)));
+        }
+
+        foreach (var npc in PlayerNPCs.Values)
+        {
+            if(npc.PassScenario == false)
+            {
+                yield return coDict[npc];
+            }
+        }
+
+        CheckPlayerNPCComplete();
+        yield break;
+    }
+
+    #endregion
+
     bool ShouldShowYudoLine(int progress)
     {
         int[] showYudoLineProgress = { 24, 29, 46, 66 };
@@ -1152,5 +1293,6 @@ public class ScenarioManager
         ObjectIndicators.Clear();
         Define.WaitingCount = 0;
         Navigation = null;
+        PlayerNPCs.Clear();
     }
 }
