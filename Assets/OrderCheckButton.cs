@@ -9,7 +9,7 @@ public class OrderCheckButton : MonoBehaviour
     MPX_Clothing_Panel mPX_Clothing_Panel;
     void Start()
     {
-        mPX_Clothing_Panel = transform.parent.gameObject.GetComponent<MPX_Clothing_Panel>();
+        mPX_Clothing_Panel = transform.parent.parent.gameObject.GetComponent<MPX_Clothing_Panel>();
         myButton = gameObject.GetComponent<Button>();
         // 버튼 클릭 이벤트에 메서드 연결
         myButton.onClick.AddListener(OnButtonClick);
@@ -25,7 +25,8 @@ public class OrderCheckButton : MonoBehaviour
             
         else if (gameObject.name == "Reset")
         {
-            Managers.UI.CreateUI(Managers.Scenario.CurrentScenarioInfo.Action);
+            Managers.UI.CreateUI(Managers.Scenario.CurrentScenarioInfo.Action, mPX_Clothing_Panel.gameObject.transform);
+            transform.parent.parent.GetComponent<MPX_Clothing_Panel>().checkingCount = 0;
             Destroy(transform.parent.gameObject);
         }
         

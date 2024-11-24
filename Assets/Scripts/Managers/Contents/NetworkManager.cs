@@ -20,7 +20,8 @@ public class NetworkManager
 	{
 		// DNS (Domain Name System)
 		string host = Dns.GetHostName();
-		IPHostEntry ipHost = Dns.GetHostEntry(host);
+        IPHostEntry ipHost = Dns.GetHostEntry("220.69.209.153");
+        
 		//#if UNITY_EDITOR
 		//		IPHostEntry ipHost = Dns.GetHostEntry(host);
 		//#else

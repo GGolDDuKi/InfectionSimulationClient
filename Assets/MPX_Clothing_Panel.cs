@@ -7,46 +7,69 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class MPX_Clothing_Panel : MonoBehaviour
-{ 
+{
     public int checkingCount = 0;
-    List<GameObject> blankSlot;
-    List<GameObject> clothingSlot;
     GameObject Order;
+    FourProtects fourProtects;
+    public GameObject child;
     private void Awake()
     {
-        Order = Util.FindChild(gameObject, "Order");
-        Managers.Object.MyPlayer.State = CreatureState.Conversation;
+        Managers.UI.CreateUI(Managers.Scenario.CurrentScenarioInfo.Action, gameObject.transform);
+        Order = Util.FindChild(gameObject.transform.GetChild(0).gameObject, "Order");
+        fourProtects = Managers.Resource.Instantiate($"Items/FourProtects").GetComponent< FourProtects>();
+        Managers.Quiz.MPX_Clothing_Panel_opencheck = true;
+        
     }
     public void Open_MPX_Panel()
     {
-        if (Managers.Scenario.CurrentScenarioInfo.Position != Managers.Object.MyPlayer.Position)
+        if (Managers.Scenario.CurrentScenarioInfo.Place != Managers.Object.MyPlayer.Place)
         {
             Managers.UI.CreateSystemPopup("WarningPopup", "해당 구역이 아닙니다.", UIManager.NoticeType.Warning);
             return;
         }
-        Managers.Object.MyPlayer.State = CreatureState.Conversation;
+
+        child = Managers.UI.CreateUI(Managers.Scenario.CurrentScenarioInfo.Action, gameObject.transform);
+        Managers.Quiz.MPX_Clothing_Panel_opencheck = true;
+        
     }
 
     public void CloseMPX_Panel()
     {
         Managers.UI.DestroyUI(gameObject);
-        Managers.Object.MyPlayer.State = CreatureState.Idle;
     }
 
     public void CheckOrder()
     {
+        if(Order == null)
+            Order = Util.FindChild(gameObject.transform.GetChild(0).gameObject, "Order");
+
         if (checkingCount == Order.transform.childCount)
         {
             Managers.UI.CreateSystemPopup("WarningPopup", "정답입니다.", UIManager.NoticeType.Info);
-            CloseMPX_Panel();
-            Managers.Scenario.CompleteCount++;
-            //Destroy(gameObject);
+
+            if (Managers.Scenario.CurrentScenarioInfo.Action == "MPX_Clothing")
+            { 
+                fourProtects.Use(Managers.Object.MyPlayer);
+                Managers.Scenario.MyAction = "MPX_Clothing";
+                Destroy(gameObject.transform.GetChild(0).gameObject);
+               Managers.Quiz.MPX_Clothing_Panel_opencheck = false;
+            }
+                
+            else if (Managers.Scenario.CurrentScenarioInfo.Action == "MPX_LayOff")
+            {
+                fourProtects.UnUse();
+                Managers.Scenario.MyAction = "MPX_LayOff";
+                Managers.Quiz.MPX_Clothing_Panel_opencheck = false;
+                Destroy(gameObject);
+            }
         }
         else
         {
+            checkingCount = 0;
             Managers.UI.CreateSystemPopup("WarningPopup", "틀렸습니다.", UIManager.NoticeType.Info);
-            Managers.UI.CreateUI(Managers.Scenario.CurrentScenarioInfo.Action);
-            Destroy(gameObject);
+            child = Managers.UI.CreateUI(Managers.Scenario.CurrentScenarioInfo.Action,gameObject.transform);
+            Destroy(gameObject.transform.GetChild(0).gameObject);
         }
     }
+
 }

@@ -31,7 +31,7 @@ public class OrderBlankUI : MonoBehaviour, IDropHandler
                 if (draggedImage != null)
                 {
                     if(draggedItem.gameObject.transform.name == gameObject.name)
-                        gameObject.transform.parent.parent.GetComponent<MPX_Clothing_Panel>().checkingCount++;
+                        gameObject.transform.parent.parent.parent.GetComponent<MPX_Clothing_Panel>().checkingCount++;
 
                     // 빈칸의 이미지를 드래그된 이미지로 교체
                     slotImage.sprite = draggedImage.sprite;
