@@ -5,7 +5,7 @@ using System;
 
 public class TTSManager
 {
-    string apiURL = "https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=AIzaSyACwjFh0MfjsFDjsCgCE6qsNU8UmUVrhYk";
+    string apiURL = "https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=AIzaSyA02cCkivgsm0saNlc5pSDiXF99AkvQ4ZA";
     SetTextToSpeech tts = new SetTextToSpeech();
 
     public void Speaking(Transform host, string message)
