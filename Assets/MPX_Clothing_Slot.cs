@@ -10,11 +10,12 @@ public class MPX_Clothing_Slot : MPX_Clothing_Panel , IBeginDragHandler, IEndDra
     private CanvasGroup canvasGroup;
     private RectTransform rectTransform;
     private Transform originalParent;
-
+    private Vector2 originalPosition;
     void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
+        originalPosition = rectTransform.anchoredPosition;
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -33,7 +34,7 @@ public class MPX_Clothing_Slot : MPX_Clothing_Panel , IBeginDragHandler, IEndDra
         canvasGroup.blocksRaycasts = true; // Raycast 다시 활성화
         if (transform.parent == originalParent) // 부모가 변경되지 않았다면 원래 자리로
         {
-            rectTransform.anchoredPosition = Vector2.zero;
+            rectTransform.anchoredPosition = originalPosition;
         }
     }
 

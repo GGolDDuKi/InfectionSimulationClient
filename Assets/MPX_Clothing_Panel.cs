@@ -11,30 +11,10 @@ public class MPX_Clothing_Panel : MonoBehaviour
     public int checkingCount = 0;
     List<GameObject> blankSlot;
     List<GameObject> clothingSlot;
-
+    GameObject Order;
     private void Awake()
     {
-        //int i = 1;
-
-        //GameObject order = Util.FindChild(gameObject, "Order");
-        //GameObject orderview = Util.FindChild(gameObject, "Order_view");
-        //GameObject blank_slot;
-        //GameObject clothing_slot;
-
-        //blankSlot = new List<GameObject>();
-        //clothingSlot = new List<GameObject>();
-
-        //do
-        //{
-        //    blank_slot = Util.FindChild(order, i.ToString());
-        //    clothing_slot = Util.FindChild(orderview, i.ToString());
-
-        //    blankSlot.Add(blank_slot);
-        //    clothingSlot.Add(clothing_slot);
-
-        //    i++;
-        //}while(blank_slot == null && blank_slot);
-
+        Order = Util.FindChild(gameObject, "Order");
         Managers.Object.MyPlayer.State = CreatureState.Conversation;
     }
     public void Open_MPX_Panel()
@@ -55,16 +35,18 @@ public class MPX_Clothing_Panel : MonoBehaviour
 
     public void CheckOrder()
     {
-        if (checkingCount == blankSlot.Count)
+        if (checkingCount == Order.transform.childCount)
         {
             Managers.UI.CreateSystemPopup("WarningPopup", "정답입니다.", UIManager.NoticeType.Info);
             CloseMPX_Panel();
             Managers.Scenario.CompleteCount++;
-            Destroy(gameObject);
+            //Destroy(gameObject);
         }
         else
         {
             Managers.UI.CreateSystemPopup("WarningPopup", "틀렸습니다.", UIManager.NoticeType.Info);
+            Managers.UI.CreateUI(Managers.Scenario.CurrentScenarioInfo.Action);
+            Destroy(gameObject);
         }
     }
 }
