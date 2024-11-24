@@ -275,7 +275,7 @@ public class MyPlayerController : PlayerController
                     return;
 
                 if(Managers.Quiz.MPX_Clothing_Panel.GetComponent<MPX_Clothing_Panel>().child == null)
-                        Managers.Quiz.MPX_Clothing_Panel.GetComponent<MPX_Clothing_Panel>().Open_MPX_Panel();
+                        Managers.Quiz.MPX_Clothing_Panel.GetComponent<MPX_Clothing_Panel>().Open_MPX_Panel();   
                 
                 return;
             }
