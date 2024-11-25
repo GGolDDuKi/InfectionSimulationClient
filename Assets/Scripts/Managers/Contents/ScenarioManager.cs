@@ -113,6 +113,7 @@ public class ScenarioManager
 
     void Init(string scenarioName, S_StartScenario packet)
     {
+        PassUICheck = true;
         ScenarioName = scenarioName;
         Progress = 0;
         CompleteCount = 0;
@@ -187,7 +188,7 @@ public class ScenarioManager
     }
 
     #region 시나리오 보호구 UI 띄우는 코드
-    public bool PassUICheck;
+    public bool PassUICheck = true;
     Coroutine PassUI;
     public GameObject WearUI1 = null;
     public GameObject WearUI2 = null;

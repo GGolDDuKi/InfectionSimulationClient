@@ -49,7 +49,8 @@ public class MPX_Clothing_Panel : MonoBehaviour
             Managers.UI.CreateSystemPopup("WarningPopup", "정답입니다.", UIManager.NoticeType.Info);
 
             if (Managers.Scenario.CurrentScenarioInfo.Action == "MPX_Clothing")
-            { 
+            {
+                checkingCount = 0;
                 fourProtects.Use(Managers.Object.MyPlayer);
                 Managers.Scenario.MyAction = "MPX_Clothing";
                 Destroy(gameObject.transform.GetChild(0).gameObject);
@@ -58,6 +59,7 @@ public class MPX_Clothing_Panel : MonoBehaviour
                 
             else if (Managers.Scenario.CurrentScenarioInfo.Action == "MPX_LayOff")
             {
+                checkingCount = 0;
                 fourProtects.UnUse();
                 Managers.Scenario.MyAction = "MPX_LayOff";
                 Managers.Quiz.MPX_Clothing_Panel_opencheck = false;

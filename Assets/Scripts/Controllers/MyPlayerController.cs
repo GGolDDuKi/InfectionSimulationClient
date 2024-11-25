@@ -96,6 +96,9 @@ public class MyPlayerController : PlayerController
         if(Managers.Scenario.State_Image)
             return false;
 
+        if (!Managers.Scenario.PassUICheck)
+            return false;
+
         if (Managers.Item.IsInventoryOpen)
             return false;
 

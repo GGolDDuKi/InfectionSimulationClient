@@ -706,6 +706,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   checkingCount: 0
+  child: {fileID: 0}
 --- !u!225 &6165596188501288655
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -1364,6 +1365,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   checkingCount: 0
+  child: {fileID: 0}
 --- !u!225 &9179425825485052458
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -1833,6 +1835,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   checkingCount: 0
+  child: {fileID: 0}
 --- !u!225 &8596319416147898045
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -2223,6 +2226,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   checkingCount: 0
+  child: {fileID: 0}
 --- !u!225 &7332626178281720573
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -3361,6 +3365,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   checkingCount: 0
+  child: {fileID: 0}
 --- !u!225 &3450244307760581965
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -4200,6 +4205,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   checkingCount: 0
+  child: {fileID: 0}
 --- !u!225 &3199257267044162175
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -4304,6 +4310,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   checkingCount: 0
+  child: {fileID: 0}
 --- !u!225 &4244718146305535862
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -4456,7 +4463,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.427451, g: 0.427451, b: 0.427451, a: 0.57254905}
+  m_Color: {r: 0.427451, g: 0.427451, b: 0.427451, a: 0.98039216}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -5342,6 +5349,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   checkingCount: 0
+  child: {fileID: 0}
 --- !u!225 &4636202405857499723
 CanvasGroup:
   m_ObjectHideFlags: 0
