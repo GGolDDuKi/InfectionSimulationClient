@@ -404,7 +404,7 @@ public class ScenarioManager
             {
                 Managers.Instance.StartCoroutine(SpecimeCollectionUI());
             }
-
+            
             Managers.Instance.StartCoroutine(CoCheckAction());
             yield return new WaitUntil(() => CompleteCount >= 1);
 
