@@ -334,7 +334,8 @@ public class MyPlayerController : PlayerController
                 }
                 else
                 {
-                    Managers.Keyword.CloseGUIKeyword();
+                    if(Managers.Keyword.CanClose)
+                        Managers.Keyword.CloseGUIKeyword();
                 }
             }
         }
