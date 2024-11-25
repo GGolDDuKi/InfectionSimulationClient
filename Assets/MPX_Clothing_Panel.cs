@@ -12,14 +12,15 @@ public class MPX_Clothing_Panel : MonoBehaviour
     GameObject Order;
     FourProtects fourProtects;
     public GameObject child;
+
     private void Awake()
     {
-        Managers.UI.CreateUI(Managers.Scenario.CurrentScenarioInfo.Action, gameObject.transform);
+        child = Managers.UI.CreateUI(Managers.Scenario.CurrentScenarioInfo.Action, gameObject.transform);
         Order = Util.FindChild(gameObject.transform.GetChild(0).gameObject, "Order");
         fourProtects = Managers.Resource.Instantiate($"Items/FourProtects").GetComponent< FourProtects>();
         Managers.Quiz.MPX_Clothing_Panel_opencheck = true;
-        
     }
+
     public void Open_MPX_Panel()
     {
         if (Managers.Scenario.CurrentScenarioInfo.Place != Managers.Object.MyPlayer.Place)

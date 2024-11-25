@@ -60,7 +60,14 @@ public class SettingManager
             return;
         }
 
-        if(Managers.Scenario.CurrentScenarioInfo != null && Managers.Scenario.CurrentScenarioInfo.Action == "Tell")
+        if (Managers.Scenario.CurrentScenarioInfo.Action == "MPX_Clothing" || Managers.Scenario.CurrentScenarioInfo.Action == "MPX_LayOff")
+        {
+            MicCheckUI.SetActive(true);
+            MicCheckUI.GetComponent<TMP_Text>().text = "를 눌러 보호구를 착용하세요";
+            return;
+        }
+
+        if (Managers.Scenario.CurrentScenarioInfo != null && Managers.Scenario.CurrentScenarioInfo.Action == "Tell")
             MicCheckUI.SetActive(true);
         else
             MicCheckUI.SetActive(false);
