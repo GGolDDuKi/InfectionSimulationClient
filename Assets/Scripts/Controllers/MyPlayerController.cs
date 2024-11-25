@@ -176,6 +176,9 @@ public class MyPlayerController : PlayerController
             if (State == CreatureState.UsingPhone)
                 return;
 
+            if (Managers.Scenario.PassUICheck == false)
+                return;
+
             if (Items.ContainsKey("Syringe") || Items.ContainsKey("DrySwab"))
             {
                 return;
@@ -199,7 +202,12 @@ public class MyPlayerController : PlayerController
             if (!Managers.UI.ExitPopup())
             {
                 if (State == CreatureState.Idle || State == CreatureState.Setting)
+                {
+                    if (Managers.Scenario.PassUICheck == false)
+                        return;
+
                     Managers.UI.OpenOrCloseSetting();
+                }
             }
         }
 
@@ -213,7 +221,11 @@ public class MyPlayerController : PlayerController
                     return;
                 }
 
-                if(Items.ContainsKey("Syringe") || Items.ContainsKey("DrySwab"))
+
+                if (Managers.Scenario.PassUICheck == false)
+                    return;
+
+                if (Items.ContainsKey("Syringe") || Items.ContainsKey("DrySwab"))
                 {
                     return;
                 }
