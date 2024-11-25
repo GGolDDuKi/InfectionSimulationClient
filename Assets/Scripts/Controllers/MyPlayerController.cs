@@ -234,7 +234,7 @@ public class MyPlayerController : PlayerController
         {
             #region 시나리오 시작 전
 
-            if (!Managers.Scenario._doingScenario)
+            if (!Managers.Scenario._doingScenario)  
             {
                 Managers.Scenario.SendScenarioInfo();
                 return;
@@ -263,21 +263,24 @@ public class MyPlayerController : PlayerController
 
             #endregion
             
-            if ((Managers.Scenario.CurrentScenarioInfo.Action == "MPX_Clothing" || Managers.Scenario.CurrentScenarioInfo.Action == "MPX_LayOff") && Managers.Object.MyPlayer.Place == Managers.Scenario.CurrentScenarioInfo.Place)
+            if (Managers.Scenario.CurrentScenarioInfo.Action == "MPX_Clothing" || Managers.Scenario.CurrentScenarioInfo.Action == "MPX_LayOff")
             {
-                if (Managers.Quiz.MPX_Clothing_Panel == null)
+                if ((Managers.Object.MyPlayer.Place == Managers.Scenario.CurrentScenarioInfo.Place )||(Managers.Scenario.CurrentScenarioInfo.Place == null))
                 {
-                    Managers.Quiz.MPX_Clothing_Panel = Managers.UI.CreateUI("MPX_Clothing_Panel");
+                    if (Managers.Quiz.MPX_Clothing_Panel == null)
+                    {
+                        Managers.Quiz.MPX_Clothing_Panel = Managers.UI.CreateUI("MPX_Clothing_Panel");
+                        return;
+                    }
+
+                    else if (Managers.Quiz.MPX_Clothing_Panel.GetComponent<MPX_Clothing_Panel>().child != null)
+                        return;
+
+                    if (Managers.Quiz.MPX_Clothing_Panel.GetComponent<MPX_Clothing_Panel>().child == null)
+                        Managers.Quiz.MPX_Clothing_Panel.GetComponent<MPX_Clothing_Panel>().Open_MPX_Panel();
+
                     return;
                 }
-                  
-                else if (Managers.Quiz.MPX_Clothing_Panel.GetComponent<MPX_Clothing_Panel>().child != null)
-                    return;
-
-                if(Managers.Quiz.MPX_Clothing_Panel.GetComponent<MPX_Clothing_Panel>().child == null)
-                        Managers.Quiz.MPX_Clothing_Panel.GetComponent<MPX_Clothing_Panel>().Open_MPX_Panel();   
-                
-                return;
             }
 
             if (!Managers.Scenario.CheckPlace())
