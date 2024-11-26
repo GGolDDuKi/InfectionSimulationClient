@@ -172,6 +172,8 @@ public class BaseController : MonoBehaviour
     Transform _rightHand;
     Transform _leftHand;
 
+
+
     #endregion
 
     public virtual void CopyTo(BaseController target)
@@ -208,7 +210,6 @@ public class BaseController : MonoBehaviour
             Debug.Log($"{Position} 캐릭터 생성");
         }
     }
-
 
     private void Update()
     {
